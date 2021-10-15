@@ -5,17 +5,18 @@ import { AppBar, Toolbar, Typography, Container } from '@material-ui/core';
 import useStyles from '../utils/styles';
 
 
-function Layout({children}) {
+function Layout({title, description, children}) {
     const classes = useStyles();
     return (
         <div>   
             <Head>
-                <title>ecommerce website</title>
+                <title>{title ? `${title} - Ecomstore`: `ecommerce website`}</title>
+                {description && <meta name="description" content={description} />}
             </Head>
             <AppBar position="static" className={classes.navbar}>
                 <Toolbar>
                         <Link href="/">
-                            <a><Typography className={classes.brand}>Ecomstore</Typography></a>
+                            <a className={classes.brand}><Typography>Ecomstore</Typography></a>
                         </Link>
                         <div className={classes.grow}></div>
                         <div>
