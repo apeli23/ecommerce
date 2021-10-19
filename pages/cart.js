@@ -19,8 +19,9 @@ import {Grid,
 } from '@material-ui/core'
 import Link from 'next/link'
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
 
-export default function CartScreen() {
+function CartScreen() {
     const {state} = useContext(Store);
     const {
         cart:{ cartItems}
@@ -33,7 +34,7 @@ export default function CartScreen() {
         </Typography>
         {cartItems.length === 0 ? (
           <div>
-            Cart is empty. <Link href="/">Go shopping</Link>
+            Cart is empty. <Link href="/"><a>Go shopping</a></Link>
           </div>
         ) : (
           <Grid container spacing={1}>
@@ -54,22 +55,22 @@ export default function CartScreen() {
                       <TableRow key={item._id}>
                         <TableCell>
                           <Link href={`/product/${item.slug}`} passHref>
-                            <Link>
+                            <a>
                               <Image
                                 src={item.image}
                                 alt={item.name}
                                 width={50}
                                 height={50}
                               ></Image>
-                            </Link>
+                            </a>
                           </Link>
                         </TableCell>
   
                         <TableCell>
                           <Link href={`/product/${item.slug}`} passHref>
-                            <Link>
+                            <a>
                               <Typography>{item.name}</Typography>
-                            </Link>
+                            </a>
                           </Link>
                         </TableCell>
                         <TableCell align="right">
@@ -93,7 +94,7 @@ export default function CartScreen() {
                 </Table>
               </TableContainer>
             </Grid>
-            <Grid md={3} xs={12}>
+            <Grid item md={3} xs={12}>
               <Card>
                 <List>
                   <ListItem>
@@ -116,3 +117,5 @@ export default function CartScreen() {
       </Layout>
             )
 }
+
+export default dynamic(() => Promise.resolve(CartScreen), {ssr:false})
