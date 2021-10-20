@@ -1,8 +1,20 @@
-import Image from 'next/image';
-import Heels from '../public/heels.jpg';
-import Jordans from '../public/images/jordans.jpg';
+import bcrypt from 'bcryptjs';
 
 const data = {
+    users: [
+        {
+            name:'john',
+            email: 'admin@example.com',
+            password: bcrypt.hashSync('123456'),
+            isAdmin: true,
+        },
+        {
+            name:'jane',
+            email: 'user@example.com',
+            password: bcrypt.hashSync('123456'),
+            isAdmin: false,
+        },
+    ],
     products: [
         {
             name:'Nike',
