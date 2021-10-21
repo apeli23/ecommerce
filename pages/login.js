@@ -82,7 +82,11 @@ export default function Login() {
                     </ListItem>
                     <ListItem>
                         Dont have an account
-                        <Link href='/register'><a>? Register</a></Link>
+                        <Link  href="/register" passHref>
+                            <a href={`/register?redirect=${redirect || '/'}`} passHref>
+                                ? Register
+                            </a>
+                        </Link>
                     </ListItem>
                 </List>
             </form>
