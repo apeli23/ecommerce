@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import { List,
     ListItem,
     Typography,
@@ -9,24 +9,30 @@ import Layout from '../components/Layout'
 import useStyles from '../utils/styles'
 import Link from 'next/link';
 import axios from 'axios';
+import {Store} from '../utils/Store';
+import { useRouter } from 'next/router';
+
 
 export default function Login() {
-    const classes = useStyles();
-
+ 
     const [email, setEmail] = useState('');
     const[password, setPassword] = useState('');
+    const classes = useStyles();
 
-    const submitHandler = async(e) => {
-        //prevent page from refreshing when user clicks login button
+
+    const submitHandler = async (e) => {
         e.preventDefault();
         try {
-            //send ajax request to make sure user and password works
-        const {data} = await axios.post('/api/users/login', {email, password});
-        alert('sucessful login')
-        }catch (error) {
-            alert(error.response.data ? error.response.data.message : error.message);
+          const { data } = await axios.post('/api/users/login', {
+            email,
+            password,
+          });
+          alert('succss login');
+        } catch (err) {
+          alert(err.response.data ? err.response.data.message : err.message);
         }
-    }
+    };
+
     return (
         <Layout title="Login">
             <form className={classes.form} onSubmit={submitHandler}>
