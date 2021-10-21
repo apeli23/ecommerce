@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import { List,
     ListItem,
     Typography,
@@ -11,10 +11,21 @@ import Link from 'next/link';
 import axios from 'axios';
 import {Store} from '../utils/Store';
 import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 
 
 export default function Login() {
- 
+    const router = useRouter();
+    const{redirect} = router.query;
+    const {state, dispatch} = useContext(Store);
+    const {userInfo} = state;
+    
+    //avoid accessing login form if user exists.
+    useEffect(() => {
+        if (userInfo) {
+          router.push('/');
+        }
+    }, []);
     const [email, setEmail] = useState('');
     const[password, setPassword] = useState('');
     const classes = useStyles();
@@ -27,7 +38,11 @@ export default function Login() {
             email,
             password,
           });
-          alert('succss login');
+          
+          //save data in react context
+          dispatch({ type:'USER_LOGIN', payload: data });
+          Cookies.set('userInfo', data);
+          router.push(redirect || '/')
         } catch (err) {
           alert(err.response.data ? err.response.data.message : err.message);
         }
