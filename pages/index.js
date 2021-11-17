@@ -54,7 +54,7 @@ export default function Home(props) {
 									</CardActionArea>
 								</Link>
 								<CardActions>
-									<Typography>${product.price}</Typography>
+									<Typography>Ksh {product.price} </Typography>
 									<Button 
 										size="small" 
 										color="primary"

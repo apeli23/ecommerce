@@ -17,6 +17,8 @@ handler.post(async (req, res) => {
   const user = await newUser.save();
   await db.disconnect();
 
+  console.log("user", user)
+
   const token = signToken(user);
   res.send({
     token,
@@ -25,6 +27,7 @@ handler.post(async (req, res) => {
     email: user.email,
     isAdmin: user.isAdmin,
   });
+  console.log("token", token)
 });
 
 export default handler;

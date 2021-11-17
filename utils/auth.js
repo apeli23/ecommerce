@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-require("dotenv").config();
+//require("dotenv").config();
 
 const signToken = (user) => {
   return jwt.sign(
@@ -33,4 +33,5 @@ const isAuth = async (req, res, next) => {
     res.status(401).send({ message: 'Token is not suppiled' });
   }
 };
+
 export { signToken, isAuth };

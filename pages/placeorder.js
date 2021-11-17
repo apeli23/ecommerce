@@ -35,7 +35,7 @@ function PlaceOrder() {
       userInfo,
       cart:{ cartItems, shippingAddress, paymentMethod}
     } = state;
-  
+  // console.log('userInfo', userInfo);
     const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100; // 123.456 => 123.46
     const itemsPrice = round2(
       cartItems.reduce((a, c) => a + c.price * c.quantity, 0)
@@ -53,39 +53,48 @@ function PlaceOrder() {
         router.push('/cart');
       }
     }, []);
-    
+    let dta;
     const { closeSnackbar, enqueueSnackbar } = useSnackbar();
-  const [loading, setLoading] = useState(false);
-  const placeOrderHandler = async () => {
-    closeSnackbar();
-    try {
-      setLoading(true);
-      const { data } = await axios.post(
-        '/api/orders',
-        {
-          orderItems: cartItems,
-          shippingAddress,
-          paymentMethod,
-          itemsPrice,
-          shippingPrice,
-          taxPrice,
-          totalPrice,
-        },
-        {
-          headers: {
-            authorization: `Bearer ${userInfo.token}`,
+    const [loading, setLoading] = useState(false);
+
+    
+    const placeOrderHandler = async () => {
+      
+      closeSnackbar();
+      console.log("userInfo.token", userInfo)
+      try {
+        setLoading(true);
+        const { data } = await axios.post(
+          '/api/orders',
+          {
+            orderItems: cartItems,
+            shippingAddress,
+            paymentMethod,
+            itemsPrice,
+            shippingPrice,
+            taxPrice,
+            totalPrice,
           },
-        }
-      );
-      dispatch({ type: 'CART_CLEAR' });
-      Cookies.remove('cartItems');
-      setLoading(false);
-      router.push(`/order/${data._id}`);
-    } catch (err) {
-      setLoading(false);
-      enqueueSnackbar(getError(err), { variant: 'error' });
-    }
-  };
+          {
+            headers: {
+              authorization: `Bearer ${userInfo.token}`,
+            },
+          }
+        );
+        dta= data;
+        console.log("data")
+        dispatch({ type: 'CART_CLEAR' });
+        Cookies.remove('cartItems');
+        setLoading(false);
+        console.log("Post complete")
+        router.push(`/order/${data._id}`);
+
+      } catch(err) {
+        console.log("error", err)
+        setLoading(false);
+        enqueueSnackbar(getError(err), { variant: 'error' });
+      }
+    };
 
     return  (
       <Layout title="Place Order">
@@ -169,7 +178,7 @@ function PlaceOrder() {
                               </Typography>
                             </TableCell>
                             <TableCell align="right">
-                              Ksh {item.price}
+                              $ {item.price}
                             </TableCell>
                             
                           </TableRow>
@@ -197,7 +206,7 @@ function PlaceOrder() {
                         <Typography>Items:</Typography>
                       </Grid>
                       <Grid item xs={6}>
-                        <Typography>Ksh{itemsPrice}</Typography>
+                        <Typography>$ {itemsPrice}</Typography>
                       </Grid>
                     </Grid>
                   </ListItem>
@@ -207,7 +216,7 @@ function PlaceOrder() {
                         <Typography>Tax:</Typography>
                       </Grid>
                       <Grid item xs={6}>
-                        <Typography>Ksh{taxPrice}</Typography>
+                        <Typography>$ {taxPrice}</Typography>
                       </Grid>
                     </Grid>
                   </ListItem>
@@ -217,7 +226,7 @@ function PlaceOrder() {
                         <Typography>Shipping:</Typography>
                       </Grid>
                       <Grid item xs={6}>
-                        <Typography>Ksh{shippingPrice}</Typography>
+                        <Typography>$ {shippingPrice}</Typography>
                       </Grid>
                     </Grid>
                   </ListItem>
@@ -227,7 +236,7 @@ function PlaceOrder() {
                         <Typography><strong>Total:</strong></Typography>
                       </Grid>
                       <Grid item xs={6}>
-                        <Typography><strong>Ksh{totalPrice}</strong></Typography>
+                        <Typography><strong>$ {totalPrice}</strong></Typography>
                       </Grid>
                     </Grid>
                   </ListItem>
