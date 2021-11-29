@@ -35,7 +35,7 @@ function PlaceOrder() {
       userInfo,
       cart:{ cartItems, shippingAddress, paymentMethod}
     } = state;
-  // console.log('userInfo', userInfo);
+    console.log(`userInfo`, userInfo)
     const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100; // 123.456 => 123.46
     const itemsPrice = round2(
       cartItems.reduce((a, c) => a + c.price * c.quantity, 0)
@@ -57,13 +57,29 @@ function PlaceOrder() {
     const { closeSnackbar, enqueueSnackbar } = useSnackbar();
     const [loading, setLoading] = useState(false);
 
-    
+    const data2 = {
+      orderItems: cartItems,
+      shippingAddress,
+      paymentMethod,
+      itemsPrice,
+      shippingPrice,
+      taxPrice,
+      totalPrice,
+    };
+    console.log(`data2`, data2)
+
+
     const placeOrderHandler = async () => {
-      
+      const user = JSON.stringify(userInfo)
+      console.log(`user`, user)
+      const users = JSON.parse(user);
+      console.log(`users`, users)
+      const token = users.token
       closeSnackbar();
-      console.log("userInfo.token", userInfo)
       try {
         setLoading(true);
+        // console.log('cartItems', cartItems);
+
         const { data } = await axios.post(
           '/api/orders',
           {
@@ -77,12 +93,11 @@ function PlaceOrder() {
           },
           {
             headers: {
-              authorization: `Bearer ${userInfo.token}`,
+              authorization: `Bearer ${token}`,
             },
           }
         );
-        dta= data;
-        console.log("data")
+        console.log("data", data)
         dispatch({ type: 'CART_CLEAR' });
         Cookies.remove('cartItems');
         setLoading(false);

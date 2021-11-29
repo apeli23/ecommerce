@@ -16,7 +16,7 @@ const initialState ={
       : '',
   },
   userInfo: Cookies.get('userInfo')
-    ?   Cookies.get('userInfo')
+    ? Cookies.get('userInfo')
     : null,
 };
 
