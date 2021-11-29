@@ -7,7 +7,7 @@ import { AppBar,
     Container, 
     createTheme, 
     ThemeProvider, 
-    // CssBaseLine, 
+    CssBaseline, 
     Switch,
     Badge,
     Button,
@@ -25,27 +25,26 @@ function Layout({title, description, children}) {
     const {state, dispatch} = useContext(Store);
     const {darkMode, cart, userInfo} = state;
     const theme = createTheme({
-        typography:{
-            h1: {
-                fontSize: '1.6rem',
-                fontWeight: 400,
-                margin:'1rem 0'
-            },
-            h2: {
-                fontSize: '1.4rem',
-                fontWeight: 400,
-                margin:'1rem 0'
-            },
-
+        typography: {
+          h1: {
+            fontSize: '1.6rem',
+            fontWeight: 400,
+            margin: '1rem 0',
+          },
+          h2: {
+            fontSize: '1.4rem',
+            fontWeight: 400,
+            margin: '1rem 0',
+          },
         },
         palette: {
-            type: darkMode ? 'dark' : 'light',
-            primary: {
-                main: '#f0c000',
-            },
-            secondary: {
-                main: '#208080',
-            },
+          type: darkMode ? 'dark' : 'light',
+          primary: {
+            main: '#f0c000',
+          },
+          secondary: {
+            main: '#208080',
+          },
         },
     });
     const classes = useStyles();
@@ -76,7 +75,7 @@ function Layout({title, description, children}) {
                 {description && <meta name="description" content={description} />}
             </Head>
             <ThemeProvider theme={theme}>
-                {/* <CssBaseLine /> */}
+                <CssBaseline />
                 <AppBar position="static" className={classes.navbar}>
                     <Toolbar>
                             <Link href="/">
