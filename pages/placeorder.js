@@ -57,28 +57,13 @@ function PlaceOrder() {
     const { closeSnackbar, enqueueSnackbar } = useSnackbar();
     const [loading, setLoading] = useState(false);
 
-    const data2 = {
-      orderItems: cartItems,
-      shippingAddress,
-      paymentMethod,
-      itemsPrice,
-      shippingPrice,
-      taxPrice,
-      totalPrice,
-    };
-    console.log(`data2`, data2)
-
-
     const placeOrderHandler = async () => {
       const user = JSON.stringify(userInfo)
-      console.log(`user`, user)
       const users = JSON.parse(user);
-      console.log(`users`, users)
       const token = users.token
       closeSnackbar();
       try {
         setLoading(true);
-        // console.log('cartItems', cartItems);
 
         const { data } = await axios.post(
           '/api/orders',
@@ -97,7 +82,6 @@ function PlaceOrder() {
             },
           }
         );
-        console.log("data", data)
         dispatch({ type: 'CART_CLEAR' });
         Cookies.remove('cartItems');
         setLoading(false);
