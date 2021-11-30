@@ -2,6 +2,7 @@ import {useEffect} from 'react';
 import { SnackbarProvider } from 'notistack';
 import '../styles/globals.css';
 import { StoreProvider } from '../utils/Store';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 function MyApp({ Component, pageProps }) {
 //  stop material-ui from rendering on server side
@@ -14,7 +15,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
       <StoreProvider>
-        <Component {...pageProps} />
+        <PayPalScriptProvider deferLoading={true}> 
+          <Component {...pageProps} />
+        </PayPalScriptProvider>
       </StoreProvider>
     </SnackbarProvider>
   );
