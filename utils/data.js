@@ -1,92 +1,92 @@
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
 const data = {
     users: [
         {
-            name:'john',
-            email: 'admin@example.com',
-            password: bcrypt.hashSync('123456'),
+            name:"john",
+            email: "admin@example.com",
+            password: bcrypt.hashSync("123456"),
             isAdmin: true,
         },
         {
-            name:'jane',
-            email: 'user@example.com',
-            password: bcrypt.hashSync('123456'),
+            name:"jane",
+            email: "user@example.com",
+            password: bcrypt.hashSync("123456"),
             isAdmin: false,
         },
     ],
     products: [
         {
-            name:'Nike',
-            slug:'nike-shoes',
-            category: 'Shoes',
-            image: '/images/nike.jpg',
+            name:"Nike",
+            slug:"nike-shoes",
+            category: "Shoes",
+            image: "/images/nike.jpg",
             price: 3000,
-            brand: 'Nike',
+            brand: "Nike",
             rating: 4.5,
             numReviews: 10,
             countInStock: 20,
-            description: 'The popular Nike shoes'
+            description: "The popular Nike shoes"
         },
         {
-            name:'Jordans',
-            slug:'jordans-shoes',
-            category: 'Shoes',
-            image: '/images/jordans.jpg',
+            name:"Jordans",
+            slug:"jordans-shoes",
+            category: "Shoes",
+            image: "/images/jordans.jpg",
             price: 5000,
-            brand: 'Jordans',
+            brand: "Jordans",
             rating: 4.5,
             numReviews: 10,
             countInStock: 20,
-            description: 'Amazing Jordans'
+            description: "Amazing Jordans"
         },
         {
-            name:'Timber',
-            slug:'timber-shoes',
-            category: 'Shoes',
-            image: '/images/timberland.jpg',
+            name:"Timber",
+            slug:"timber-shoes",
+            category: "Shoes",
+            image: "/images/timberland.jpg",
             price: 6000,
-            brand: 'Timberland',
+            brand: "Timberland",
             rating: 4.5,
             numReviews: 10,
             countInStock: 20,
-            description: 'Original Timber shoes'
+            description: "Original Timber shoes"
         },
         {
-            name:'Diamond Heels',
-            slug:'diamond-heels',
-            category: 'Shoes',
-            image: '/images/heels.jpg',
+            name:"Diamond Heels",
+            slug:"diamond-heels",
+            category: "Shoes",
+            image: "/images/heels.jpg",
             price: 7000,
-            brand: 'Diamond Heels',
+            brand: "Diamond Heels",
             rating: 4.5,
             numReviews: 10,
             countInStock: 20,
-            description: 'Diamond heels are forever'
+            description: "Diamond heels are forever"
         },
         {
-            name:'Pants',
-            slug:'keller_sport-pants',
-            category: 'Tops',
-            image: '/images/pants.jpg',
+            name:"Pants",
+            slug:"keller_sport-pants",
+            category: "Tops",
+            image: "/images/pants.jpg",
             price: 7000,
-            brand: 'Keller sports',
+            brand: "Keller sports",
             rating: 4.5,
             numReviews: 10,
             countInStock: 20,
-            description: 'cool keller pants'
+            description: "cool keller pants"
         },
         {
-            name:'T-shirt',
-            slug:'blue t-shirt',
-            category: 'Coats',
-            image: '/images/tshirt.jpg',
+            name:"T-shirt",
+            slug:"blue t-shirt",
+            category: "Coats",
+            image: "/images/tshirt.jpg",
             price: 7000,
-            brand: 'Gildan',
+            brand: "Gildan",
             rating: 4.5,
             numReviews: 10,
             countInStock: 20,
-            description: 'Awesome Gildan tops'
+            description: "Awesome Gildan tops"
         },
             
     ]

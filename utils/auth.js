@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-//require("dotenv").config();
 
 const signToken = (user) => {
   return jwt.sign(
@@ -16,6 +15,7 @@ const signToken = (user) => {
     }
   );
 };
+
 const isAuth = async (req, res, next) => {
   // console.log(`req.headers`, req.headers)
   const { authorization } = req.headers;

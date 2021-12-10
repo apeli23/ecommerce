@@ -1,53 +1,55 @@
-import React, {useContext, useEffect} from 'react'
-import { List,
+
+import {
+    List,
     ListItem,
     Typography,
     TextField,
-    Button
- } from '@material-ui/core'
-import Layout from '../components/Layout'
-import useStyles from '../utils/styles'
-import Link from 'next/link';
-import axios from 'axios';
-import {Store} from '../utils/Store';
-import { useRouter } from 'next/router';
-import Cookies from 'js-cookie';
-import { Controller, useController, useForm} from 'react-hook-form';
-import { useSnackbar } from 'notistack';
-import { getError } from '../utils/error';
-
+    Button,
+    Link,
+} from '@material-ui/core';
+  import axios from 'axios';
+  import { useRouter } from 'next/router';
+  import NextLink from 'next/link';
+  import React, { useContext, useEffect, useState } from 'react';
+  import Layout from '../components/Layout';
+  import { Store } from '../utils/Store';
+  import useStyles from '../utils/styles';
+  import Cookies from 'js-cookie';
+  import { Controller, useForm } from 'react-hook-form';
+  import { useSnackbar } from 'notistack';
+  import { getError } from '../utils/error';
+  
 
 export default function Login() {
-    const {handleSubmit, control, formState:{ errors}} = useForm();
-    const {enqueueSnackbar, closeSnackbar} =useSnackbar();
+    const {
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm();
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const router = useRouter();
-    const{redirect} = router.query;
-    const {state, dispatch} = useContext(Store);
-    const {userInfo} = state;
-    
-    //avoid accessing login form if user exists.
+    const { redirect } = router.query; // login?redirect=/shipping
+    const { state, dispatch } = useContext(Store);
+    const { userInfo } = state;
     useEffect(() => {
         if (userInfo) {
-          router.push('/');
+        router.push('/');
         }
     }, []);
 
     const classes = useStyles();
-
-    const submitHandler = async ({email, password}) => {
-                                               closeSnackbar();
+    const submitHandler = async ({ email, password }) => {
+        closeSnackbar();
         try {
-          const { data } = await axios.post('/api/users/login', {
+        const { data } = await axios.post('/api/users/login', {
             email,
             password,
-          });
-          
-          //save data in react context
-          dispatch({ type:'USER_LOGIN', payload: data });
-          Cookies.set('userInfo', data);
-          router.push(redirect || '/')
+        });
+        dispatch({ type: 'USER_LOGIN', payload: data });
+        Cookies.set('userInfo', data);
+        router.push(redirect || '/');
         } catch (err) {
-            enqueueSnackbar(getError(err), { variant: 'error' });
+        enqueueSnackbar(getError(err), { variant: 'error' });
         }
     };
 
@@ -69,20 +71,20 @@ export default function Login() {
                             }}
                             render={({ field }) => (
                                 <TextField
-                                variant="outlined"
-                                fullWidth
-                                id="email"
-                                label="Email"
-                                inputProps={{ type: 'email' }}
-                                error={Boolean(errors.email)}
-                                helperText={
+                                  variant="outlined"
+                                  fullWidth
+                                  id="email"
+                                  label="Email"
+                                  inputProps={{ type: 'email' }}
+                                  error={Boolean(errors.email)}
+                                  helperText={
                                     errors.email
-                                    ? errors.email.type === 'pattern'
+                                      ? errors.email.type === 'pattern'
                                         ? 'Email is not valid'
                                         : 'Email is required'
-                                    : ''
-                                }
-                                {...field}
+                                      : ''
+                                  }
+                                  {...field}
                                 ></TextField>
                             )}
                         ></Controller>
@@ -122,11 +124,9 @@ export default function Login() {
                         </Button>
                     </ListItem>
                     <ListItem>
-                        Dont have an account
-                        <Link  href="/register" passHref>
-                            <a href={`/register?redirect=${redirect || '/'}`} >
-                                ? Register
-                            </a>
+                        Dont have an account 
+                        <Link  href={`/register?redirect=${redirect || '/'}`}>
+                            ? Register
                         </Link>
                     </ListItem>
                 </List>

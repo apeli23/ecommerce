@@ -78,7 +78,7 @@ function PlaceOrder() {
           },
           {
             headers: {
-              authorization: `Bearer ${token}`,
+              authorization: `Bearer ${userInfo.token}`,
             },
           }
         );
