@@ -64,7 +64,7 @@ function AdminDashboard() {
     fetchData();
   }, []);
   return (
-    <Layout title="Order History">
+    <Layout title="Admin Dashboard">
       <Grid container spacing={1}>
         <Grid item md={3} xs={12}>
           <Card className={classes.section}>
@@ -172,17 +172,16 @@ function AdminDashboard() {
                 {/* <Bar
                   data={{
                     labels: summary.salesData.map((x) => x._id),
-                    datasets: [
-                      {
-                        label: 'Sales',
-                        backgroundColor: 'rgba(162, 222, 208, 1)',
-                        data: summary.salesData.map((x) => x.totalSales),
-                      },
-                    ],
+                    //   datasets: [
+                    //     {
+                    //       label: 'Sales',
+                    //       backgroundColor: 'rgba(162, 222, 208, 1)',
+                    //       data: summary.salesData.map((x) => x.totalSales),
+                    //     },
+                    //   ],
                   }}
                   options={{
                     legend: { display: true, position: 'right' },
-
                   }}
                 ></Bar> */}
               </ListItem>
