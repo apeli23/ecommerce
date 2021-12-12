@@ -14,148 +14,239 @@ import {
   Button,
   Menu,
   MenuItem,
+  Box,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  Divider,
+  ListItemText,
 } from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+import CancelIcon from '@material-ui/icons/Cancel';
 import useStyles from '../utils/styles';
 import { Store } from '../utils/Store';
+import { getError } from '../utils/error';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
+import axios from 'axios';
+import { useEffect } from 'react';
 
+function Layout({ title, description, children }) {
+  const router = useRouter();
+  const { state, dispatch } = useContext(Store);
+  const { darkMode, cart, userInfo } = state;
+  const theme = createTheme({
+    typography: {
+      h1: {
+        fontSize: '1.6rem',
+        fontWeight: 400,
+        margin: '1rem 0',
+      },
+      h2: {
+        fontSize: '1.4rem',
+        fontWeight: 400,
+        margin: '1rem 0',
+      },
+    },
+    palette: {
+      type: darkMode ? 'dark' : 'light',
+      primary: {
+        main: '#f0c000',
+      },
+      secondary: {
+        main: '#208080',
+      },
+    },
+  });
+  const classes = useStyles();
 
-function Layout({title, description, children}) {
-    const router = useRouter();
-    const { state, dispatch } = useContext(Store);
-    const { darkMode, cart, userInfo } = state;
-    const theme = createTheme({
-        typography: {
-        h1: {
-            fontSize: '1.6rem',
-            fontWeight: 400,
-            margin: '1rem 0',
-        },
-        h2: {
-            fontSize: '1.4rem',
-            fontWeight: 400,
-            margin: '1rem 0',
-        },
-        },
-        palette: {
-        type: darkMode ? 'dark' : 'light',
-        primary: {
-            main: '#f0c000',
-        },
-        secondary: {
-            main: '#208080',
-        },
-        },
-    });
-    const classes = useStyles();
-    const darkModeChangeHandler = () => {
-        dispatch({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });
-        const newDarkMode = !darkMode;
-        Cookies.set('darkMode', newDarkMode ? 'ON' : 'OFF');
-    };  
-    const [anchorEl, setAnchorEl] = useState(null);
-    const loginClickHandler = (e) => {
-        setAnchorEl(e.currentTarget);
-    };
-    const loginMenuCloseHandler = (e, redirect) => {
-        setAnchorEl(null);
-        if (redirect) {
-        router.push(redirect);
-        }
-    };
-    const logoutClickHandler = () => {
-        setAnchorEl(null);
-        dispatch({ type: 'USER_LOGOUT' });
-        Cookies.remove('userInfo');
-        Cookies.remove('cartItems');
-        router.push('/');
-    };
-    return (
-        <div>
-            <Head>
-                <title>{title ? `${title} - Next Amazona` : 'Next Amazona'}</title>
-                {description && <meta name="description" content={description}></meta>}
-            </Head>
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <AppBar position="static" className={classes.navbar}>
-                <Toolbar>
-                    <Link href="/">
-                        <a className={classes.brand}><Typography>Ecomstore</Typography></a>
-                    </Link>
-                    <div className={classes.grow}></div>
-                            <div>
-                                <Switch
-                                    checked={darkMode}
-                                    onChange={darkModeChangeHandler}
-                                ></Switch>
-                                <Link href="/cart">
-                                    <a>{cart.cartItems.length > 0 ?
-                                        <Badge color='secondary' badgeContent={cart.cartItems.length} >
-                                            Cart
-                                        </Badge>: 'Cart'}
-                                    </a>
-                                </Link>
-                                {userInfo ? (
-                                    <>
-                                    <Button
-                                        aria-controls="simple-menu"
-                                        aria-haspopup="true"
-                                        onClick={loginClickHandler}
-                                        className={classes.navbarButton}
-                                    >
-                                        {userInfo.name}
-                                    </Button>
-                                    <Menu
-                                        id="simple-menu"
-                                        anchorEl={anchorEl}
-                                        keepMounted
-                                        open={Boolean(anchorEl)}
-                                        onClose={loginMenuCloseHandler}
-                                    >
-                                        <MenuItem
-                                            onClick={(e) => loginMenuCloseHandler(e, '/profile')}
-                                        >
-                                            Profile
-                                        </MenuItem>
-                                        <MenuItem
-                                            onClick={(e) =>
-                                                loginMenuCloseHandler(e, '/order-history')
-                                            }
-                                        >
-                                            Order Hisotry
-                                        </MenuItem>
-                                        {userInfo.isAdmin && (
-                                            <MenuItem
-                                                onClick={(e) =>
-                                                loginMenuCloseHandler(e, '/admin/dashboard')
-                                                }
-                                            >
-                                                Admin Dashboard
-                                            </MenuItem>
-                                        )}
-                                        <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
-                                    </Menu>
-                                    </>
-                                ) : (
-                                    <Link href="/login">
-                                        <a>Login</a>
-                                    </Link>
-                                )}
-                            </div>
-                    </Toolbar>
-                </AppBar>
-                <Container className={classes.main}> 
-                    {children}
-                </Container>    
-                <footer className={classes.footer}>
-                    <Typography>All rights reserved ecomstore</Typography>
-                </footer>
-            </ThemeProvider>
-        </div>
-    )
+  const [sidbarVisible, setSidebarVisible] = useState(false);
+  const sidebarOpenHandler = () => {
+    setSidebarVisible(true);
+  };
+  const sidebarCloseHandler = () => {
+    setSidebarVisible(false);
+  };
+
+  const [categories, setCategories] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const fetchCategories = async () => {
+    try {
+      const { data } = await axios.get(`/api/products/categories`);
+      setCategories(data);
+    } catch (err) {
+      enqueueSnackbar(getError(err), { variant: 'error' });
+    }
+  };
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const darkModeChangeHandler = () => {
+    dispatch({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });
+    const newDarkMode = !darkMode;
+    Cookies.set('darkMode', newDarkMode ? 'ON' : 'OFF');
+  };
+  const [anchorEl, setAnchorEl] = useState(null);
+  const loginClickHandler = (e) => {
+    setAnchorEl(e.currentTarget);
+  };
+  const loginMenuCloseHandler = (e, redirect) => {
+    setAnchorEl(null);
+    if (redirect) {
+      router.push(redirect);
+    }
+  };
+  const logoutClickHandler = () => {
+    setAnchorEl(null);
+    dispatch({ type: 'USER_LOGOUT' });
+    Cookies.remove('userInfo');
+    Cookies.remove('cartItems');
+    router.push('/');
+  };
+  return (
+    <div>
+      <Head>
+        <title>{title ? `${title} - Next Amazona` : 'Next Amazona'}</title>
+        {description && <meta name="description" content={description}></meta>}
+      </Head>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AppBar position="static" className={classes.navbar}>
+          <Toolbar className={classes.toolbar}>
+            <Box display="flex" alignItems="center">
+              <IconButton
+                edge="start"
+                aria-label="open drawer"
+                onClick={sidebarOpenHandler}
+              >
+                <MenuIcon className={classes.navbarButton} />
+              </IconButton>
+              <Link href="/" passHref>
+                <Link>
+                  <Typography className={classes.brand}>amazona</Typography>
+                </Link>
+              </Link>
+            </Box>
+            <Drawer
+              anchor="left"
+              open={sidbarVisible}
+              onClose={sidebarCloseHandler}
+            >
+              <List>
+                <ListItem>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Typography>Shopping by category</Typography>
+                    <IconButton
+                      aria-label="close"
+                      onClick={sidebarCloseHandler}
+                    >
+                      <CancelIcon />
+                    </IconButton>
+                  </Box>
+                </ListItem>
+                <Divider light />
+                {categories.map((category) => (
+                  <Link
+                    key={category}
+                    href={`/search?category=${category}`}
+                    passHref
+                  >
+                    <ListItem
+                      button
+                      component="a"
+                      onClick={sidebarCloseHandler}
+                    >
+                      <ListItemText primary={category}></ListItemText>
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+            </Drawer>
+            <div className={classes.grow}></div>
+            <div>
+              <Switch
+                checked={darkMode}
+                onChange={darkModeChangeHandler}
+              ></Switch>
+              <Link href="/cart" passHref>
+                <Typography component="span">
+                  {cart.cartItems.length > 0 ? (
+                    <Badge
+                      color="secondary"
+                      badgeContent={cart.cartItems.length}
+                    >
+                      Cart
+                    </Badge>
+                  ) : (
+                    'Cart'
+                  )}
+                </Typography>
+              </Link>{' '}
+              {userInfo ? (
+                <>
+                  <Button
+                    aria-controls="simple-menu"
+                    aria-haspopup="true"
+                    onClick={loginClickHandler}
+                    className={classes.navbarButton}
+                  >
+                    {userInfo.name}
+                  </Button>
+                  <Menu
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={loginMenuCloseHandler}
+                  >
+                    <MenuItem
+                      onClick={(e) => loginMenuCloseHandler(e, '/profile')}
+                    >
+                      Profile
+                    </MenuItem>
+                    <MenuItem
+                      onClick={(e) =>
+                        loginMenuCloseHandler(e, '/order-history')
+                      }
+                    >
+                      Order Hisotry
+                    </MenuItem>
+                    {userInfo.isAdmin && (
+                      <MenuItem
+                        onClick={(e) =>
+                          loginMenuCloseHandler(e, '/admin/dashboard')
+                        }
+                      >
+                        Admin Dashboard
+                      </MenuItem>
+                    )}
+                    <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <Link href="/login" passHref>
+                  <Typography component="span">Login</Typography>
+                </Link>
+              )}
+            </div>
+          </Toolbar>
+        </AppBar>
+        <Container className={classes.main}>{children}</Container>
+        <footer className={classes.footer}>
+          <Typography>All rights reserved ecomstore</Typography>
+        </footer>
+      </ThemeProvider>
+    </div>
+  );
 }
 
-export default Layout
+export default Layout;
