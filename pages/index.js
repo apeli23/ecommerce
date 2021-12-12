@@ -16,6 +16,7 @@ import {
   import { useRouter } from 'next/router';
   import { useContext } from 'react';
   import { Store } from '../utils/Store';
+  import Rating from '@material-ui/lab/Rating';
 
 
 
@@ -50,9 +51,8 @@ export default function Home(props) {
 											title={product.name}
 										></CardMedia>
 										<CardContent>
-											<Typography>
-												{product.name}
-											</Typography>
+											<Typography>{product.name}</Typography>
+											<Rating value={product.rating} readOnly></Rating>
 										</CardContent>
 									</CardActionArea>
 								</Link>
@@ -79,7 +79,7 @@ export async function getServerSideProps(){
 	await db.connect();
 	//enabling lean option tells mongoose to skip instanciating a full mongoose doc 
 	//and just give the POJO(Plain Object) to us. 
-	const products = await Product.find({}).lean();
+	const products = await Product.find({}, '-reviews').lean();
 	await db.disconnect();
 	return{
 		props: {
