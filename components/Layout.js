@@ -142,7 +142,7 @@ function Layout({ title, description, children }) {
               </IconButton>
               <Link href="/" passHref>
                 <Link>
-                  <Typography className={classes.brand}>amazona</Typography>
+                  <Typography className={classes.brand}>e-commerce</Typography>
                 </Link>
               </Link>
             </Box>
